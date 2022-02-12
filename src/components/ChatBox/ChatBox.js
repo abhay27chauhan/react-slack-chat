@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
 import classNames from "classnames";
+import Picker, { SKIN_TONE_MEDIUM_DARK } from "emoji-picker-react";
 
 import { bgColor, fontFamily, textColor } from "../../lib/constants";
 import defaultChannelIcon from "../../assets/team.svg";
@@ -17,6 +18,8 @@ import {
   postFile,
   wasIMentioned,
 } from "../../lib/chatFunctions";
+
+import emojiIcon from "../../assets/emojiIcon.svg";
 
 function ChatBox({
   activeChannelRef,
@@ -38,6 +41,7 @@ function ChatBox({
   const [inputDisabed, setInputDisabled] = useState(false);
   const [fileUploadLoader, setFileUploadLoader] = useState(false);
   const [postMyFile, setPostMyFile] = useState("");
+  const [emojiPicker, showEmojiPicker] = useState(false);
   const fileUploadTitle = `Posted by ${botName}`;
 
   function getUserImg(message) {
@@ -241,6 +245,19 @@ function ChatBox({
         {messages.map((message) => displayFormattedMessage(message))}
       </ChatMessages>
       <div>
+        {emojiPicker && (
+          <EmojiPickerBox>
+            <Picker
+              onEmojiClick={(e, emojiObject) =>
+                setPostMyMessage(postMyMessage + emojiObject.emoji)
+              }
+              disableAutoFocus={true}
+              skinTone={SKIN_TONE_MEDIUM_DARK}
+              groupNames={{ smileys_people: "PEOPLE" }}
+              native
+            />
+          </EmojiPickerBox>
+        )}
         {fileUploadLoader && (
           <ChatFileUpload>
             <span>Uploading</span>
@@ -268,7 +285,17 @@ function ChatBox({
               disabled={inputDisabed}
               onKeyPress={(e) => e.key === "Enter" && postNewMessage()}
               onChange={(e) => setPostMyMessage(e.target.value)}
+              onClick={() => {
+                if (emojiPicker) showEmojiPicker(false);
+              }}
             />
+            <EmojiIcon className="icon-on-hover">
+              <img
+                src={emojiIcon}
+                alt="Emoji Icon"
+                onClick={() => showEmojiPicker(!emojiPicker)}
+              />
+            </EmojiIcon>
           </div>
         )}
       </div>
@@ -507,9 +534,9 @@ const ChatInput = styled.input`
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 75%;
-  height: 45px;
-  padding: 0.5rem 1rem 0.5rem 4rem;
+  width: 100%;
+  height: 62px;
+  padding: 0.5rem 2.5rem 0.5rem 2.5rem;
   background-repeat: no-repeat;
   background-position: 1rem 1rem;
   background-color: ${bgColor.colorAthensGray};
@@ -517,6 +544,27 @@ const ChatInput = styled.input`
   color: ${textColor.colorClay};
   font-family: ${fontFamily.font_0}, ${fontFamily.font_1}, ${fontFamily.font_2},
     ${fontFamily.font_3};
+  box-sizing: border-box;
+`;
+
+const EmojiIcon = styled.div`
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  height: 24px;
+  width: 28.4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+`;
+
+const EmojiPickerBox = styled.div`
+  position: absolute;
+  bottom: 100px;
+  right: 0px;
+  z-index: 10000;
+  min-width: 150px;
 `;
 
 export default ChatBox;

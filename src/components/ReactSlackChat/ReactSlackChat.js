@@ -350,6 +350,14 @@ const GlobalStyles = createGlobalStyle`
     max-width: 100%;
     color: ${textColor.themeColor};
   }
+
+  .icon-on-hover {
+    &:hover {
+        background: ${bgColor.bgHoverBlue};
+        border-radius: 50%;
+        cursor: pointer;
+    }
+}
 `;
 
 const Card = styled.div`
@@ -461,62 +469,4 @@ const ContactPhoto = styled.img`
   svg {
     height: 42px;
   }
-`;
-
-const ChatMsgRow = styled.div`
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-
-  &::after {
-    content: "";
-    display: table;
-    clear: both;
-  }
-
-  &.mine {
-    text-align: left;
-  }
-
-  &.notMine {
-    text-align: right;
-
-    .mentioned {
-      background: ${bgColor.colorPictonBlue} ${AiFillStar} no-repeat -2px -2px !important;
-      color: ${textColor.textWhite} !important;
-    }
-  }
-`;
-
-const ChatMessage = styled.div`
-  display: inline-block;
-  max-width: 60%;
-  word-wrap: break-word;
-  margin-right: 10px;
-  padding: 0.8rem;
-  font-family: ${fontFamily.font_0}, ${fontFamily.font_1}, ${fontFamily.font_2},
-    ${fontFamily.font_3};
-  border-radius: 5px;
-  color: ${textColor.textPrimaryBlue};
-
-  &.mine {
-    background-color: ${bgColor.bgBluishWhite};
-  }
-  &.notMine {
-    background-color: ${bgColor.bgLightGray};
-  }
-`;
-
-const UserContactPhoto = styled.img`
-  float: left;
-  margin-top: 2px;
-  padding-bottom: 1px;
-  height: 38px;
-  border-radius: 50%;
-  margin-right: 10px;
-`;
-
-const ChatContactPhoto = styled.img`
-  border-radius: 50%;
-  height: 38px;
-  float: right;
 `;
