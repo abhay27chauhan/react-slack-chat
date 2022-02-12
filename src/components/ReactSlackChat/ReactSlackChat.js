@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import SlackBot from "slack";
 import classNames from "classnames";
 import styled, { createGlobalStyle } from "styled-components";
-import { AiFillStar } from "react-icons/ai";
 
 import { getChannels, getMessages, getUsers } from "../../lib/slack-utils";
 import { arraysIdentical, debugLog } from "../../lib/utils";
@@ -238,7 +237,6 @@ export default function ReactSlackChat(props) {
           <h2 className="transition">{props.helpText || "Help?"}</h2>
           <h2 className="subText">Click on a channel to interact.</h2>
         </Header>
-        <div className={classNames("card_circle", "transition")} />
         <div
           className={classNames(
             "channels",
@@ -283,14 +281,9 @@ export default function ReactSlackChat(props) {
 const GlobalStyles = createGlobalStyle`
   .card-active {
     cursor: default;
-    height: 500px;
+    height: 232.33px;
     width: 340px;
     z-index: 99999;
-
-    .card_circle {
-      background-size: cover;
-      border-radius: 0;
-    }
 
     h2 {
       color: ${textColor.textWhite};
@@ -300,6 +293,8 @@ const GlobalStyles = createGlobalStyle`
     }
 
     &.chatActive {
+      height: 500px;
+      
       .helpHeader {
         visibility: hidden;
         opacity: 0;
@@ -369,6 +364,7 @@ const Card = styled.div`
   bottom: 0;
   width: 340px;
   cursor: pointer;
+  border-radius: 5px 5px 0px 0px;
 
   .channels {
     visibility: hidden;
@@ -398,6 +394,7 @@ const Header = styled.div`
   background: ${bgColor.themeColor};
   position: relative;
   padding: 20px;
+  border-radius: 5px 5px 0px 0px;
 `;
 
 const UnreadNotificationsBadge = styled.span`
@@ -430,8 +427,7 @@ const Contact = styled.div`
   position: relative;
   width: 95%;
   height: 50px;
-  margin-top: 10px;
-  padding-left: 1rem;
+  padding: 10px 0px 10px 16px;
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -444,7 +440,8 @@ const Contact = styled.div`
 
   .contact__status {
     position: absolute;
-    top: 20px;
+    top: 50%;
+    transform: translateY(-50%);
     right: 15px;
     width: 8px;
     height: 8px;

@@ -316,6 +316,7 @@ const ChatHeader = styled.div`
   width: 100%;
   height: 6rem;
   background: ${bgColor.themeColor};
+  border-radius: 5px 5px 0px 0px;
 `;
 
 const ChatBack = styled.span`
@@ -415,6 +416,13 @@ const ChatMessages = styled.div`
   padding-right: 10px;
   padding-left: 10px;
   overflow-y: auto;
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const ChatMsgRow = styled.div`
@@ -543,9 +551,6 @@ const ChatInput = styled.input`
   width: 100%;
   height: 62px;
   padding: 0.5rem 2.5rem 0.5rem 2.5rem;
-  background-repeat: no-repeat;
-  background-position: 1rem 1rem;
-  background-color: ${bgColor.colorAthensGray};
   font-size: 1em;
   color: ${textColor.colorClay};
   font-family: ${fontFamily.font_0}, ${fontFamily.font_1}, ${fontFamily.font_2},
@@ -557,8 +562,8 @@ const EmojiIcon = styled.div`
   position: absolute;
   bottom: 15px;
   right: 15px;
-  height: 24px;
-  width: 28.4px;
+  height: 28px;
+  width: 28px;
   display: flex;
   justify-content: center;
   align-items: center;

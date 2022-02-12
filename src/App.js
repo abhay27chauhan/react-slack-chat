@@ -15,7 +15,6 @@ function App() {
       userImage="https://robohash.org/183.87.13.138"
       singleUserMode={true}
       helpText="Optional Help Text"
-      themeColor="#856090"
     />
   );
 }
