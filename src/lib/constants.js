@@ -3,7 +3,10 @@ const bgColor = {
   bgBlack30: "rgba(0, 0, 0, 0.3)",
   themeColor: "#2e7eea",
   colorCuriousBlue: "#22a2e4",
-  colorAthensGray: "#e9eaf3"
+  colorAthensGray: "#e9eaf3",
+  colorPictonBlue: "#43b2f3",
+  bgBluishWhite: "#f6f8ff",
+  bgLightGray: "#f7f8fa",
 };
 
 const textColor = {
@@ -13,6 +16,7 @@ const textColor = {
   colorShamrockApprox: "#43dea3",
   colorJadeApprox: "#00b570",
   colorClay: "#2b2342",
+  textPrimaryBlue:"#142683"
 };
 
 const fontFamily = {

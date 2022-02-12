@@ -226,7 +226,12 @@ export default function ReactSlackChat(props) {
           // show customer image
           <UserContactPhoto src={props.userImage} alt="userIcon" />
         )}
-        <ChatMessage className={classNames(mentioned ? "mentioned" : "")}>
+        <ChatMessage
+          className={classNames(
+            mentioned ? "mentioned" : "",
+            myMessage ? "mine" : "notMine"
+          )}
+        >
           {messageText}
         </ChatMessage>
         {
@@ -528,9 +533,9 @@ const GlobalStyles = createGlobalStyle`
     }
 
     h2 {
-      color: $white;
+      color: ${textColor.textWhite};
       small {
-        color: $white;
+        color: ${textColor.textWhite};
       }
     }
 
@@ -814,6 +819,7 @@ const ChatMessages = styled.div`
 `;
 
 const ChatMsgRow = styled.div`
+  margin-top: 0.5rem;
   margin-bottom: 0.5rem;
 
   &::after {
@@ -830,8 +836,8 @@ const ChatMsgRow = styled.div`
     text-align: right;
 
     .mentioned {
-      background: $color_picton_blue_approx ${AiFillStar} no-repeat -2px -2px !important;
-      color: $white !important;
+      background: ${bgColor.colorPictonBlue} ${AiFillStar} no-repeat -2px -2px !important;
+      color: ${textColor.textWhite} !important;
     }
   }
 `;
@@ -844,20 +850,29 @@ const ChatMessage = styled.div`
   padding: 0.8rem;
   font-family: ${fontFamily.font_0}, ${fontFamily.font_1}, ${fontFamily.font_2},
     ${fontFamily.font_3};
+  border-radius: 5px;
+  color: ${textColor.textPrimaryBlue};
+
+  &.mine {
+    background-color: ${bgColor.bgBluishWhite};
+  }
+  &.notMine {
+    background-color: ${bgColor.bgLightGray};
+  }
 `;
 
 const UserContactPhoto = styled.img`
   float: left;
   margin-top: 2px;
   padding-bottom: 1px;
-  height: 42px;
+  height: 38px;
   border-radius: 50%;
   margin-right: 10px;
 `;
 
 const ChatContactPhoto = styled.img`
   border-radius: 50%;
-  height: 42px;
+  height: 38px;
   float: right;
 `;
 
@@ -871,17 +886,17 @@ const dots = keyframes`
     text-shadow: 0.25em 0 0 rgba(0, 0, 0, 0), 0.5em 0 0 rgba(0, 0, 0, 0);
   }
   40% {
-    color: $white;
+    color: ${textColor.textWhite};
     text-shadow: 0.25em 0 0 rgba(0, 0, 0, 0), 0.5em 0 0 rgba(0, 0, 0, 0);
   }
   60% {
-    text-shadow: 0.25em 0 0 $white, 0.5em 0 0 rgba(0, 0, 0, 0);
+    text-shadow: 0.25em 0 0 ${textColor.textWhite}, 0.5em 0 0 rgba(0, 0, 0, 0);
   }
   80% {
-    text-shadow: 0.25em 0 0 $white, 0.5em 0 0 $white;
+    text-shadow: 0.25em 0 0 ${textColor.textWhite}, 0.5em 0 0 ${textColor.textWhite};
   }
   100% {
-    text-shadow: 0.25em 0 0 $white, 0.5em 0 0 $white;
+    text-shadow: 0.25em 0 0 ${textColor.textWhite}, 0.5em 0 0 ${textColor.textWhite};
   }
 `;
 
