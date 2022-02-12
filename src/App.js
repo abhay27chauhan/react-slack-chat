@@ -1,24 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import ReactSlackChat from "./components/ReactSlackChat/ReactSlackChat";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ReactSlackChat
+      botName="batman" // VisitorID, CorpID, Email, IP address etc.
+      botId="U03363WRNUQ"
+      apiToken="xoxb-3086413923460-3108132872976-3o7kJeYYuRx1S8DcPmHlqrXr"
+      channels={[
+        {
+          name: "random",
+        },
+      ]}
+      userImage="https://robohash.org/183.87.13.138"
+      singleUserMode={true}
+      helpText="Optional Help Text"
+      themeColor="#856090"
+    />
   );
 }
 
