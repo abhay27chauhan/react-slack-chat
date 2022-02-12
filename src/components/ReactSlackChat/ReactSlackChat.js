@@ -3,14 +3,13 @@ import SlackBot from "slack";
 import classNames from "classnames";
 import styled, { createGlobalStyle } from "styled-components";
 
+import ChatBox from "../ChatBox/ChatBox";
+import Channels from "./Channels";
 import { getChannels, getMessages, getUsers } from "../../lib/slack-utils";
 import { arraysIdentical, debugLog } from "../../lib/utils";
 import { getCachedChannelMap } from "../../lib/cachedChannelMap";
 import { getNewMessages } from "../../lib/chatFunctions";
-
 import { bgColor, fontFamily, textColor } from "../../lib/constants";
-import defaultChannelIcon from "../../assets/team.svg";
-import ChatBox from "../ChatBox/ChatBox";
 
 export default function ReactSlackChat(props) {
   const [failed, setFailed] = useState(false);
@@ -237,24 +236,11 @@ export default function ReactSlackChat(props) {
           <h2 className="transition">{props.helpText || "Help?"}</h2>
           <h2 className="subText">Click on a channel to interact.</h2>
         </Header>
-        <div
-          className={classNames(
-            "channels",
-            "transition",
-            channelActiveView ? "channelActive" : ""
-          )}
-        >
-          {channels.map((channel) => (
-            <Contact key={channel.id} onClick={(e) => goToChatView(e, channel)}>
-              <ContactPhoto
-                src={channel.icon || defaultChannelIcon}
-                alt="channel icon"
-              />
-              <span className="contact__name">{channel?.name}</span>
-              <span className={classNames("contact__status", "online")} />
-            </Contact>
-          ))}
-        </div>
+        <Channels
+          channelActiveView={channelActiveView}
+          channels={channels}
+          goToChatView={goToChatView}
+        />
         <ChatBox
           activeChannelRef={activeChannelRef}
           goToChannelView={goToChannelView}
@@ -420,50 +406,5 @@ const UnreadNotificationsBadge = styled.span`
 
   &:hover {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-  }
-`;
-
-const Contact = styled.div`
-  position: relative;
-  width: 95%;
-  height: 50px;
-  padding: 10px 0px 10px 16px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  overflow: hidden;
-
-  .contact__name {
-    font-family: ${fontFamily.font_0}, ${fontFamily.font_1},
-      ${fontFamily.font_2}, ${fontFamily.font_3};
-  }
-
-  .contact__status {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: 15px;
-    width: 8px;
-    height: 8px;
-    border: 2px solid ${textColor.colorJadeApprox};
-    border-radius: 50%;
-    opacity: 0;
-    transition: opacity 0.3s;
-
-    &.online {
-      opacity: 1;
-    }
-  }
-`;
-
-const ContactPhoto = styled.img`
-  border-radius: 50%;
-  margin-right: 1.5rem;
-  height: 50px;
-  width: 50px;
-  float: right;
-
-  svg {
-    height: 42px;
   }
 `;
