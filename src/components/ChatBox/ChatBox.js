@@ -6,7 +6,6 @@ import Picker, { SKIN_TONE_MEDIUM_DARK } from "emoji-picker-react";
 import { bgColor, fontFamily, textColor } from "../../lib/constants";
 import defaultChannelIcon from "../../assets/team.svg";
 import { GrAttachment } from "react-icons/gr";
-import { AiFillStar } from "react-icons/ai";
 import { saveChannelMap } from "../../lib/cachedChannelMap";
 import { debugLog } from "../../lib/utils";
 import { postMessage } from "../../lib/slack-utils";
@@ -244,7 +243,7 @@ function ChatBox({
       <ChatMessages id="widget-reactSlakChatMessages">
         {messages.map((message) => displayFormattedMessage(message))}
       </ChatMessages>
-      <div>
+      <InputBox>
         {emojiPicker && (
           <EmojiPickerBox>
             <Picker
@@ -265,7 +264,7 @@ function ChatBox({
         )}
         {!fileUploadLoader && (
           <div>
-            <div>
+            <Attachment>
               <AttachmentIcon htmlFor="chat__upload">
                 <GrAttachment />
                 <input
@@ -276,7 +275,7 @@ function ChatBox({
                   onChange={handleFileChange}
                 />
               </AttachmentIcon>
-            </div>
+            </Attachment>
             <ChatInput
               type="text"
               id="chat__input__text"
@@ -298,7 +297,7 @@ function ChatBox({
             </EmojiIcon>
           </div>
         )}
-      </div>
+      </InputBox>
     </Chat>
   );
 }
@@ -436,7 +435,7 @@ const ChatMsgRow = styled.div`
     text-align: right;
 
     .mentioned {
-      background: ${bgColor.colorPictonBlue} ${AiFillStar} no-repeat -2px -2px !important;
+      background: ${bgColor.colorPictonBlue} no-repeat -2px -2px !important;
       color: ${textColor.textWhite} !important;
     }
   }
@@ -516,13 +515,23 @@ const ChatFileUpload = styled.div`
   }
 `;
 
-const AttachmentIcon = styled.label`
+const InputBox = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+`;
+
+const Attachment = styled.div`
   position: absolute;
   bottom: 15px;
   left: 15px;
+  z-index: 9999;
+`;
+
+const AttachmentIcon = styled.label`
   width: 25px;
   height: 25px;
-  z-index: 9999;
   cursor: pointer;
 
   .chat__upload {
@@ -531,9 +540,6 @@ const AttachmentIcon = styled.label`
 `;
 
 const ChatInput = styled.input`
-  position: absolute;
-  bottom: 0;
-  left: 0;
   width: 100%;
   height: 62px;
   padding: 0.5rem 2.5rem 0.5rem 2.5rem;
