@@ -1,4 +1,4 @@
-import { debugLog } from "../utils";
+import { debugLog, errorLogger } from "../utils";
 
 const getChannels = ({ apiToken, bot, channelFilter = [], defaultChannel }) => {
   return bot.conversations
@@ -7,13 +7,12 @@ const getChannels = ({ apiToken, bot, channelFilter = [], defaultChannel }) => {
     })
     .then((payload) => {
       debugLog(payload);
-      // get the channels we need
+
       const channels = [];
-      let activeChannel = "";
+      let activeChannel = {};
 
       payload.channels.forEach((channel) => {
         channelFilter.forEach((channelObject) => {
-          // If this channel is exactly as requested
           if (
             channelObject.name === channel.name ||
             channelObject.id === channel.id
@@ -27,6 +26,10 @@ const getChannels = ({ apiToken, bot, channelFilter = [], defaultChannel }) => {
         });
       });
       return { channels, activeChannel };
+    })
+    .catch((err) => {
+      errorLogger("get channels", err);
+      throw err;
     });
 };
 

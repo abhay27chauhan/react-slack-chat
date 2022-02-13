@@ -6,7 +6,7 @@ import styled, { createGlobalStyle } from "styled-components";
 import ChatBox from "../ChatBox/ChatBox";
 import Channels from "./Channels";
 import { getChannels, getMessages, getUsers } from "../../lib/slack-utils";
-import { arraysIdentical, debugLog } from "../../lib/utils";
+import { arraysIdentical, debugLog, errorLogger } from "../../lib/utils";
 import { getCachedChannelMap } from "../../lib/cachedChannelMap";
 import { getNewMessages } from "../../lib/chatFunctions";
 import { bgColor, fontFamily, textColor } from "../../lib/constants";
@@ -55,6 +55,9 @@ export default function ReactSlackChat(props) {
 
       activeChannelRef.current = activeChannel;
       return { channels, onlineUsers };
+    }).catch(err => {
+      errorLogger("connectBot", err);
+      throw err;
     });
   }
 
@@ -209,7 +212,7 @@ export default function ReactSlackChat(props) {
       chatboxActive && closeChatBox(e);
     }
 
-    window.addEventListener("click", runOnClick);
+    chatboxActive && window.addEventListener("click", runOnClick);
 
     return () => {
       window.removeEventListener("click", runOnClick);

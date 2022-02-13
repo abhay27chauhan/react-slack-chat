@@ -8,6 +8,7 @@ import emojiIcon from "../../assets/emojiIcon.svg";
 import { debugLog } from "../../lib/utils";
 import { postFile } from "../../lib/chatFunctions";
 import { saveChannelMap } from "../../lib/cachedChannelMap";
+import { postMessage } from "../../lib/slack-utils";
 
 function ChatFooter({
   bot,
