@@ -9,7 +9,7 @@ const getChannels = ({ apiToken, bot, channelFilter = [], defaultChannel }) => {
       debugLog(payload);
 
       const channels = [];
-      let activeChannel = {};
+      let activeChannel = null;
 
       payload.channels.forEach((channel) => {
         channelFilter.forEach((channelObject) => {
@@ -17,10 +17,10 @@ const getChannels = ({ apiToken, bot, channelFilter = [], defaultChannel }) => {
             channelObject.name === channel.name ||
             channelObject.id === channel.id
           ) {
-            if (defaultChannel === channel.name) {
-              activeChannel = channelObject;
-            }
             channel.icon = channelObject.icon; // Add on the icon property to the channel list
+            if (defaultChannel === channel.name) {
+              activeChannel = channel;
+            }
             channels.push(channel);
           }
         });

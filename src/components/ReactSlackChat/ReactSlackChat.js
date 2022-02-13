@@ -48,17 +48,20 @@ export default function ReactSlackChat(props) {
         apiToken: props.apiToken,
         bot: bot.current,
       }),
-    ]).then(([channelData, teamData]) => {
-      debugLog("got channel and team data", channelData, teamData);
-      const { channels, activeChannel } = channelData;
-      const { onlineUsers } = teamData;
+    ])
+      .then(([channelData, teamData]) => {
+        debugLog("got channel and team data", channelData, teamData);
+        const { channels, activeChannel } = channelData;
+        const { onlineUsers } = teamData;
 
-      activeChannelRef.current = activeChannel;
-      return { channels, onlineUsers };
-    }).catch(err => {
-      errorLogger("connectBot", err);
-      throw err;
-    });
+        activeChannelRef.current = activeChannel;
+        activeChannel && setChatActiveView(true);
+        return { channels, onlineUsers };
+      })
+      .catch((err) => {
+        errorLogger("connectBot", err);
+        throw err;
+      });
   }
 
   function loadMessages(channel) {
@@ -109,9 +112,7 @@ export default function ReactSlackChat(props) {
           debugLog(
             `There was an error loading messages for ${channel.name}. ${err}`
           );
-          return this.setState({
-            failed: true,
-          });
+          return setFailed(true)
         });
     };
 
@@ -126,7 +127,7 @@ export default function ReactSlackChat(props) {
   }
 
   function goToChannelView(e) {
-    e && e.stopPropagation();
+    e.stopPropagation();
     // Close Chat box only if not already open
     if (chatboxActive) {
       setChannelActiveView(true);
@@ -143,10 +144,9 @@ export default function ReactSlackChat(props) {
   }
 
   function goToChatView(e, channel) {
-    // stop propagation so we can prevent any other click events from firing
-    e && e.stopPropagation();
+    e.stopPropagation();
 
-    if (chatboxActive) {
+    if (chatboxActive || chatActiveView) {
       activeChannelRef.current = channel;
       setChannelActiveView(false);
       setChatActiveView(true);
@@ -164,19 +164,20 @@ export default function ReactSlackChat(props) {
   }
 
   function openChatBox(e) {
-    e.stopPropagation();
-    e.persist();
-
-    // Open Chat box only if not already open
     if (!chatboxActive) {
       setChatboxActive(true);
       !chatActiveView && setChannelActiveView(true);
       setNewMessageNotification(0);
     }
+
+    if(chatActiveView){
+      goToChatView(e, activeChannelRef.current);
+    }
   }
 
   function closeChatBox(e) {
     e.stopPropagation();
+    if (e.target.closest(".card-active")) return;
 
     if (chatboxActive) {
       setChatboxActive(false);
