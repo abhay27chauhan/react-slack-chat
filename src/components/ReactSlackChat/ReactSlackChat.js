@@ -85,12 +85,11 @@ export default function ReactSlackChat(props) {
           // reverse() mutates the array
           if (!arraysIdentical(messages, messagesData.messages.reverse())) {
             // Got new messages
-            // We dont wish to execute action hooks if user opens chat for the first time
             if (messages.length !== 0) {
               const newMessages = getNewMessages(
                 messages,
                 messagesData.messages,
-                props.botName
+                props.botId
               );
               gotNewMessages(newMessages);
             }
@@ -112,18 +111,12 @@ export default function ReactSlackChat(props) {
           debugLog(
             `There was an error loading messages for ${channel.name}. ${err}`
           );
-          return setFailed(true)
+          return setFailed(true);
         });
     };
 
     // Call it once
     getMessagesFromSlack();
-    // Set the function to be called at regular intervals
-    // get the history of channel at regular intevals
-    activeChannelInterval.current = setInterval(
-      getMessagesFromSlack,
-      refreshTime
-    );
   }
 
   function goToChannelView(e) {
@@ -153,6 +146,7 @@ export default function ReactSlackChat(props) {
 
       if (activeChannelInterval.current) {
         clearInterval(activeChannelInterval.current);
+        activeChannelInterval.current = null;
       }
 
       // Focus input box
@@ -170,7 +164,7 @@ export default function ReactSlackChat(props) {
       setNewMessageNotification(0);
     }
 
-    if(chatActiveView){
+    if (chatActiveView) {
       goToChatView(e, activeChannelRef.current);
     }
   }
@@ -181,8 +175,22 @@ export default function ReactSlackChat(props) {
 
     if (chatboxActive) {
       setChatboxActive(false);
+      setNewMessageNotification(0);
     }
   }
+
+  useEffect(() => {
+    if(messages.length < 0 || !activeChannelRef.current) return;
+
+    activeChannelInterval.current = setInterval(
+      () => loadMessages(activeChannelRef.current),
+      refreshTime
+    );
+
+    return () => {
+      activeChannelInterval.current && clearInterval(activeChannelInterval.current);
+    }
+  }, [messages]);
 
   useEffect(() => {
     const chatMessages = document.getElementById(
@@ -232,7 +240,7 @@ export default function ReactSlackChat(props) {
         onClick={openChatBox}
       >
         <Header className="helpHeader">
-          {newMessageNotification > 0 && (
+          {newMessageNotification > 0 && !chatboxActive && (
             <UnreadNotificationsBadge>
               {newMessageNotification}
             </UnreadNotificationsBadge>

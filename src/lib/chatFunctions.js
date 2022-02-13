@@ -4,11 +4,11 @@ export const isValidOnlineUser = (user) => {
   return !user.is_bot;
 };
 
-export const getNewMessages = (old, total, botName) => {
+export const getNewMessages = (old, total, botId) => {
   const oldText = JSON.stringify(old);
   // Message Order has to be consistent
   const differenceInMessages = total.filter(
-    (i) => oldText.indexOf(JSON.stringify(i)) === -1 && i.username !== botName
+    (i) => oldText.indexOf(JSON.stringify(i)) === -1 && i.user !== botId
   );
   return differenceInMessages;
 };
