@@ -8,6 +8,7 @@ import {
   wasIMentioned,
 } from "../../lib/chatFunctions";
 import { bgColor, fontFamily, textColor } from "../../lib/constants";
+import { formatAMPM } from "../../lib/utils";
 
 function ChatMessages({ messages, botName, botId }) {
   const fileUploadTitle = `Posted by ${botName}`;
@@ -79,10 +80,10 @@ function ChatMessages({ messages, botName, botId }) {
         className={classNames(myMessage ? "mine" : "notMine")}
         key={message.ts}
       >
-        {/* {myMessage && (
+        {myMessage && (
           // show customer image
-          <UserContactPhoto src={userImage} alt="userIcon" />
-        )} */}
+          <span>{formatAMPM(message.ts)}</span>
+        )}
         <ChatMessage
           className={classNames(
             mentioned ? "mentioned" : "",
@@ -91,10 +92,9 @@ function ChatMessages({ messages, botName, botId }) {
         >
           {messageText}
         </ChatMessage>
-        {/* {
-          // Show remote users image only if message isn't customers
-          !myMessage ? getUserImg(message) : null
-        } */}
+        {
+          !myMessage && <span>{formatAMPM(message.ts)}</span>
+        }
       </ChatMsgRow>
     );
   }
@@ -124,8 +124,11 @@ const Messages = styled.div`
 `;
 
 const ChatMsgRow = styled.div`
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-top: 0.7rem;
+  margin-bottom: 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 
   &::after {
     content: "";
@@ -133,12 +136,17 @@ const ChatMsgRow = styled.div`
     clear: both;
   }
 
+  span {
+    color: #aeb0b5;
+    font-size: 12px;
+  }
+
   &.mine {
-    text-align: left;
+    justify-content: flex-start;
   }
 
   &.notMine {
-    text-align: right;
+    justify-content: flex-end;
 
     .mentioned {
       background: ${bgColor.colorPictonBlue} no-repeat -2px -2px !important;
@@ -151,18 +159,19 @@ const ChatMessage = styled.div`
   display: inline-block;
   max-width: 60%;
   word-wrap: break-word;
-  margin-right: 10px;
   padding: 0.8rem;
   font-family: ${fontFamily.font_0}, ${fontFamily.font_1}, ${fontFamily.font_2},
     ${fontFamily.font_3};
-  border-radius: 5px;
   color: ${textColor.textPrimaryBlue};
 
   &.mine {
     background-color: ${bgColor.bgBluishWhite};
+    border-radius: 22px 22px 22px 0px;
   }
   &.notMine {
-    background-color: ${bgColor.bgLightGray};
+    background-color: #537AF2;
+    color: #ffffff;
+    border-radius: 22px 22px 0px 22px;
   }
 `;
 

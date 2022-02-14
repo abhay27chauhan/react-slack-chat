@@ -5,7 +5,7 @@ const bgColor = {
   colorCuriousBlue: "#22a2e4",
   colorAthensGray: "#e9eaf3",
   colorPictonBlue: "#43b2f3",
-  bgBluishWhite: "#f6f8ff",
+  bgBluishWhite: "#e8edfc",
   bgLightGray: "#f7f8fa",
   bgMediumGray: "#ebf0f5",
   bgHoverBlue: "#E2EFFC"
