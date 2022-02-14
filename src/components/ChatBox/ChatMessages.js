@@ -1,17 +1,21 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import classNames from "classnames";
 import styled from "styled-components";
+import { load as emojiLoader, parse as emojiParser } from "gh-emoji";
+
 import {
   decodeHtml,
   hasAttachment,
+  hasEmoji,
   isSystemMessage,
   wasIMentioned,
 } from "../../lib/chatFunctions";
 import { bgColor, fontFamily, textColor } from "../../lib/constants";
-import { formatAMPM } from "../../lib/utils";
+import { debugLog, formatAMPM } from "../../lib/utils";
 
 function ChatMessages({ messages, botName, botId }) {
   const fileUploadTitle = `Posted by ${botName}`;
+  const messageEmojiFormatter = useRef({ emoji: false });
 
   function displayFormattedMessage(message) {
     // decode formatting from messages text to html text
@@ -35,13 +39,7 @@ function ChatMessages({ messages, botName, botId }) {
               className={classNames(didIPostIt ? "mine" : "notMine")}
               key={message.ts}
             >
-              {/* {didIPostIt && (
-                // show customer image
-                <UserContactPhoto
-                  src={userImage || defaultChannelIcon}
-                  alt="userIcon"
-                />
-              )} */}
+              {didIPostIt && <span>{formatAMPM(message.ts)}</span>}
               <ChatMessage
                 className={classNames(didIPostIt ? "mine" : "notMine")}
               >
@@ -52,10 +50,7 @@ function ChatMessages({ messages, botName, botId }) {
                   <span>Click to Download</span>
                 </a>
               </ChatMessage>
-              {/* {
-                // Show remote users image only if message isn't customers
-                !didIPostIt ? getUserImg(message) : null
-              } */}
+              {!didIPostIt && <span>{formatAMPM(message.ts)}</span>}
             </ChatMsgRow>
           );
         }
@@ -75,6 +70,13 @@ function ChatMessages({ messages, botName, botId }) {
     // check if user was mentioned by anyone else remotely
     const mentioned = wasIMentioned(message, botName);
 
+    const textHasEmoji = hasEmoji(messageText);
+    // check if emoji library is enabled
+    if (messageEmojiFormatter.current.emoji && textHasEmoji) {
+      // parse plain text to emoji
+      messageText = emojiParser(messageText);
+    }
+
     return (
       <ChatMsgRow
         className={classNames(myMessage ? "mine" : "notMine")}
@@ -84,20 +86,39 @@ function ChatMessages({ messages, botName, botId }) {
           // show customer image
           <span>{formatAMPM(message.ts)}</span>
         )}
-        <ChatMessage
-          className={classNames(
-            mentioned ? "mentioned" : "",
-            myMessage ? "mine" : "notMine"
-          )}
-        >
-          {messageText}
-        </ChatMessage>
-        {
-          !myMessage && <span>{formatAMPM(message.ts)}</span>
-        }
+        {textHasEmoji ? (
+          <ChatMessage
+            className={classNames(
+              mentioned ? "mentioned" : "",
+              myMessage ? "mine" : "notMine"
+            )}
+            dangerouslySetInnerHTML={{ __html: messageText }}
+          />
+        ) : (
+          <ChatMessage
+            className={classNames(
+              mentioned ? "mentioned" : "",
+              myMessage ? "mine" : "notMine"
+            )}
+          >
+            {messageText}
+          </ChatMessage>
+        )}
+        {!myMessage && <span>{formatAMPM(message.ts)}</span>}
       </ChatMsgRow>
     );
   }
+
+  useEffect(() => {
+    emojiLoader()
+      .then(() => {
+        messageEmojiFormatter.current = {
+          emoji: true,
+        };
+      })
+      .catch((err) => debugLog(`Cant initiate emoji library ${err}`));
+  }, []);
+
   return (
     <Messages id="widget-reactSlakChatMessages">
       {messages.map((message) => displayFormattedMessage(message))}
@@ -136,7 +157,13 @@ const ChatMsgRow = styled.div`
     clear: both;
   }
 
-  span {
+  img {
+    height: 20px;
+    position: relative;
+    top: 4px;
+  }
+
+  & > span {
     color: #aeb0b5;
     font-size: 12px;
   }
@@ -169,7 +196,7 @@ const ChatMessage = styled.div`
     border-radius: 22px 22px 22px 0px;
   }
   &.notMine {
-    background-color: #537AF2;
+    background-color: #537af2;
     color: #ffffff;
     border-radius: 22px 22px 0px 22px;
   }

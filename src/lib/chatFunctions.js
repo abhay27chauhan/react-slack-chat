@@ -76,3 +76,8 @@ export const postFile = ({ file, title, apiToken, channel }) => {
     };
   });
 };
+
+export const hasEmoji = (text) => {
+  const chatHasEmoji = /(:[:a-zA-Z/_]*:)/;
+  return chatHasEmoji.test(text);
+};
