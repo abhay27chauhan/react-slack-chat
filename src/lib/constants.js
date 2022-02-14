@@ -8,7 +8,7 @@ const bgColor = {
   bgBluishWhite: "#e8edfc",
   bgLightGray: "#f7f8fa",
   bgMediumGray: "#ebf0f5",
-  bgHoverBlue: "#E2EFFC"
+  bgHoverBlue: "#E2EFFC",
 };
 
 const textColor = {

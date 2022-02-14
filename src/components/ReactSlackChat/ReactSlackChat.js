@@ -114,11 +114,6 @@ export default function ReactSlackChat(props) {
       activeChannelRef.current = channel;
       setChatActiveView(true);
 
-      if (activeChannelInterval.current) {
-        clearInterval(activeChannelInterval.current);
-        activeChannelInterval.current = null;
-      }
-
       // Focus input box
       const inputTextBox = document.getElementById("chat__input__text");
       inputTextBox.focus();
@@ -150,6 +145,7 @@ export default function ReactSlackChat(props) {
 
   useEffect(() => {
     if (messages.length === 0 || !activeChannelRef.current) return;
+
 
     activeChannelInterval.current = setInterval(
       () => loadMessages(activeChannelRef.current),

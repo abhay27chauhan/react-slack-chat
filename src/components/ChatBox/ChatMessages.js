@@ -11,11 +11,29 @@ import {
   wasIMentioned,
 } from "../../lib/chatFunctions";
 import { bgColor, fontFamily, textColor } from "../../lib/constants";
-import { debugLog, formatAMPM } from "../../lib/utils";
+import { debugLog, formatAMPM, generateDateStamp } from "../../lib/utils";
 
 function ChatMessages({ messages, botName, botId }) {
   const fileUploadTitle = `Posted by ${botName}`;
   const messageEmojiFormatter = useRef({ emoji: false });
+  const lastMessageTimestampRef = useRef(null);
+  lastMessageTimestampRef.current = null;
+
+  const showDateLabel = (timestamp) => {
+    const messageDateString = new Date(timestamp * 1000).toDateString();
+    const messageDate = messageDateString.slice(
+      0,
+      messageDateString.length - 5
+    );
+
+    if (lastMessageTimestampRef.current === messageDate) {
+      lastMessageTimestampRef.current = messageDate;
+      return false;
+    } else {
+      lastMessageTimestampRef.current = messageDate;
+      return true;
+    }
+  };
 
   function displayFormattedMessage(message) {
     // decode formatting from messages text to html text
@@ -121,7 +139,20 @@ function ChatMessages({ messages, botName, botId }) {
 
   return (
     <Messages id="widget-reactSlakChatMessages">
-      {messages.map((message) => displayFormattedMessage(message))}
+      {messages.map((message) => {
+        return (
+          <React.Fragment key={message.ts}>
+            {showDateLabel(message.ts) && (
+              <DateLabelContainer>
+                <DateLabel>
+                  {generateDateStamp(message.ts * 1000, true)}
+                </DateLabel>
+              </DateLabelContainer>
+            )}
+            {displayFormattedMessage(message)}
+          </React.Fragment>
+        );
+      })}
     </Messages>
   );
 }
@@ -142,6 +173,20 @@ const Messages = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+`;
+
+const DateLabelContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+`;
+
+const DateLabel = styled.div`
+  padding: 5px 12px 6px;
+  text-align: center;
+  background-color: #35589A;
+  border-radius: 7.5px;
+  color: white;
 `;
 
 const ChatMsgRow = styled.div`
