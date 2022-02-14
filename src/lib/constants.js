@@ -13,7 +13,6 @@ const bgColor = {
 
 const textColor = {
   textWhite: "white",
-  colorCelesteApprox: "#ccc",
   themeColor: "#2e7eea",
   colorShamrockApprox: "#43dea3",
   colorJadeApprox: "#00b570",

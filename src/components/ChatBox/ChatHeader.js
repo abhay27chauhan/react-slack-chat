@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import { bgColor, fontFamily, textColor } from "../../lib/constants";
+import { fontFamily, textColor } from "../../lib/constants";
 import defaultChannelIcon from "../../assets/team.svg";
 
 function ChatHeader({
@@ -12,17 +12,23 @@ function ChatHeader({
 }) {
   return (
     <Header>
-      <ChatBack onClick={goToChannelView} />
-      <ChatPerson>
-        <ChatStatus>status</ChatStatus>
-        <ChatOnline className="active" />
-        <ChatName>{activeChannelRef.current?.name}</ChatName>
-      </ChatPerson>
-      <ChannelHeaderPhoto
-        src={activeChannelRef.current?.icon || defaultChannelIcon}
-        alt="active channel icon"
-      />
-      {closeChatButton && <CloseButton onClick={closeChatBox}>×</CloseButton>}
+      <HeaderTop>
+        <ChatBack onClick={goToChannelView} />
+        {closeChatButton && <CloseButton onClick={closeChatBox}>×</CloseButton>}
+      </HeaderTop>
+      <HeaderBottom>
+        <ChatPerson>
+          <PersonName>Abhay Chauhan</PersonName>
+          <ChatName>{activeChannelRef.current?.name}</ChatName>
+        </ChatPerson>
+        <Image>
+          <ChatOnline className="active" />
+          <ChannelHeaderPhoto
+            src={activeChannelRef.current?.icon || defaultChannelIcon}
+            alt="active channel icon"
+          />
+        </Image>
+      </HeaderBottom>
     </Header>
   );
 }
@@ -33,22 +39,41 @@ const Header = styled.div`
   z-index: 9999;
   left: 0rem;
   width: 100%;
-  height: 6rem;
-  background: ${bgColor.themeColor};
-  border-radius: 5px 5px 0px 0px;
+  height: 7rem;
+  background: #00c6ff; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #0072ff,
+    #00c6ff
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #0072ff,
+    #00c6ff
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  border-radius: 20px 20px 0px 0px;
+
+  & > * {
+    box-sizing: border-box;
+  }
+`;
+
+const HeaderTop = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 44%;
+  padding: 12px 10px 0px 30px;
 `;
 
 const ChatBack = styled.span`
   &::before {
     content: "";
-    position: absolute;
     display: block;
     cursor: pointer;
-    top: 2.4rem;
-    left: 1.6rem;
-    width: 1.5rem;
-    height: 1.5rem;
-    border: 2px solid ${textColor.colorCelesteApprox};
+    width: 1rem;
+    height: 1rem;
+    border: 3px solid #f6f3f3;
     border-right: none;
     border-bottom: none;
     transform: rotate(-45deg);
@@ -60,35 +85,37 @@ const ChatBack = styled.span`
   }
 `;
 
+const HeaderBottom = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56%;
+  padding: 0px 20px 0px 30px;
+`;
+
 const ChatPerson = styled.div`
-  display: inline-block;
-  position: absolute;
-  top: 2rem;
-  left: 3rem;
   font-family: ${fontFamily.font_0}, ${fontFamily.font_1}, ${fontFamily.font_2},
     ${fontFamily.font_3};
   color: ${textColor.textWhite};
 `;
 
-const ChatStatus = styled.span`
-  position: relative;
-  left: 40px;
-  font-family: ${fontFamily.font_0}, ${fontFamily.font_1}, ${fontFamily.font_2},
-    ${fontFamily.font_3};
-  color: ${textColor.textWhite};
-  text-transform: uppercase;
+const PersonName = styled.p`
+  margin: 0;
+  font-weight: bold;
+  font-size: 1.5rem;
 `;
 
 const ChatOnline = styled.span`
   position: absolute;
-  left: 20px;
-  top: 5px;
-  width: 8px;
-  height: 8px;
-  border: 2px solid ${textColor.colorShamrockApprox};
+  right: 0px;
+  bottom: 0px;
+  width: 10px;
+  height: 10px;
+  border: 1px solid;
   border-radius: 50%;
   opacity: 0;
   transition: opacity 0.3s;
+  background-color: ${textColor.colorShamrockApprox};
 
   &.active {
     opacity: 1;
@@ -96,32 +123,30 @@ const ChatOnline = styled.span`
 `;
 
 const ChatName = styled.span`
-  top: 15px;
-  right: 12px;
-  position: relative;
+  color: #d3d1d1;
 `;
+
+const Image = styled.div`
+  position: relative;
+  height: 38px;
+  width: 38px;
+  border: 3px solid #70e1f5;
+  border-radius: 50%;
+`
 
 const ChannelHeaderPhoto = styled.img`
   border-radius: 50%;
-  height: 48px;
-  float: right;
-  position: relative;
-  right: 1.5rem;
-  top: 1.5rem;
+  height: 38px;
 
   svg {
-    height: 48px;
+    height: 38px;
   }
 `;
 
 const CloseButton = styled.button`
-  position: absolute;
-  top: 0;
-  right: 0;
-  color: ${textColor.colorCelesteApprox};
+  color: #f6f3f3;
   background: none;
-  font-weight: bold;
-  font-size: 1.4em;
+  font-size: 2rem;
   border: none;
   cursor: pointer;
 `;

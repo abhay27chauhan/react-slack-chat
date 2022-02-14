@@ -116,7 +116,7 @@ export default function ReactSlackChat(props) {
     };
 
     // Call it once
-    getMessagesFromSlack();
+    // getMessagesFromSlack();
   }
 
   function goToChannelView(e) {
@@ -316,10 +316,6 @@ const GlobalStyles = createGlobalStyle`
       opacity: 1;
     }
 
-    p {
-      margin-top: 300px;
-    }
-
     .channelActive.channels {
       overflow-y: auto;
       visibility: visible;
@@ -362,7 +358,7 @@ const Card = styled.div`
   bottom: 0;
   width: 340px;
   cursor: pointer;
-  border-radius: 5px 5px 0px 0px;
+  border-radius: 20px 20px 0px 0px;
 
   .channels {
     visibility: hidden;
@@ -392,7 +388,7 @@ const Header = styled.div`
   background: ${bgColor.themeColor};
   position: relative;
   padding: 20px;
-  border-radius: 5px 5px 0px 0px;
+  border-radius: 20px 20px 0px 0px;
 `;
 
 const UnreadNotificationsBadge = styled.span`
