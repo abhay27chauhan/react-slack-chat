@@ -27,12 +27,6 @@ export const isSystemMessage = (message) => {
   );
 };
 
-export const hasAttachment = (text) => {
-  const systemAttachmentAttached =
-    /uploaded a file: <(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*))/;
-  return text.match(systemAttachmentAttached);
-};
-
 export const wasIMentioned = (message, botName) => {
   const myMessage = message.username === botName;
   return !myMessage && message.text.indexOf(`@${botName}`) > -1;
@@ -43,7 +37,7 @@ export const isAdmin = (message) => {
   return typeof message.user !== "undefined";
 };
 
-export const postFile = ({ file, title, apiToken, channel }) => {
+export const postFile = ({ file, title, apiToken, channel, thread_ts }) => {
   return new Promise((resolve, reject) => {
     debugLog("UPLOADING", file);
     const options = {
@@ -60,6 +54,8 @@ export const postFile = ({ file, title, apiToken, channel }) => {
     form.append("filetype", options.filetype);
     form.append("channels", options.channels);
     form.append("file", new Blob([file]));
+    form.append("thread_ts", thread_ts)
+  
     const request = new XMLHttpRequest();
     request.open("POST", "https://slack.com/api/files.upload");
     request.send(form);

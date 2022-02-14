@@ -5,7 +5,6 @@ import { load as emojiLoader, parse as emojiParser } from "gh-emoji";
 
 import {
   decodeHtml,
-  hasAttachment,
   hasEmoji,
   isSystemMessage,
   wasIMentioned,
@@ -14,7 +13,6 @@ import { bgColor, fontFamily, textColor } from "../../lib/constants";
 import { debugLog, formatAMPM, generateDateStamp } from "../../lib/utils";
 
 function ChatMessages({ messages, botName, botId }) {
-  const fileUploadTitle = `Posted by ${botName}`;
   const messageEmojiFormatter = useRef({ emoji: false });
   const lastMessageTimestampRef = useRef(null);
   lastMessageTimestampRef.current = null;
@@ -38,43 +36,42 @@ function ChatMessages({ messages, botName, botId }) {
   function displayFormattedMessage(message) {
     // decode formatting from messages text to html text
     let messageText = decodeHtml(message.text);
+
     // who's message is this?
     const myMessage = message.user === botId;
+
+    const attachmentFound = message.files && Array.isArray(message.files);
+    if (attachmentFound && message.files.length > 0) {
+      // An attachment is found
+      return (
+        <ChatMsgRow
+          className={classNames(myMessage ? "mine" : "notMine")}
+          key={message.ts}
+        >
+          {myMessage && <span>{formatAMPM(message.ts)}</span>}
+          <ChatMessage className={classNames(myMessage ? "mine" : "notMine")}>
+            <strong>Sent an Attachment: </strong>
+            {message.files.map((file, i) => (
+              <div key={i}>
+                <span>{file.name}</span>
+                <hr />
+                <a
+                  href={file.url_private_download}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <span>Click to Download</span>
+                </a>
+              </div>
+            ))}
+          </ChatMessage>
+          {!myMessage && <span>{formatAMPM(message.ts)}</span>}
+        </ChatMsgRow>
+      );
+    }
     // Check to see if this is a Slack System message?
     if (isSystemMessage(message)) {
       // message.text is a system message
-      // try to see if it has an attachment in it
-      const attachmentFound = hasAttachment(message.text);
-      if (attachmentFound && attachmentFound[0]) {
-        // An attachment is found
-        // Point to file available for download
-        if (attachmentFound[1]) {
-          // image file found
-          const didIPostIt = message.text.indexOf(fileUploadTitle) > -1;
-          const fileNameFromUrl = attachmentFound[1].split("/");
-          return (
-            <ChatMsgRow
-              className={classNames(didIPostIt ? "mine" : "notMine")}
-              key={message.ts}
-            >
-              {didIPostIt && <span>{formatAMPM(message.ts)}</span>}
-              <ChatMessage
-                className={classNames(didIPostIt ? "mine" : "notMine")}
-              >
-                <strong>Sent an Attachment: </strong>
-                <span>{fileNameFromUrl[fileNameFromUrl.length - 1]}</span>
-                <hr />
-                <a href={attachmentFound[1]} target="_blank" rel="noreferrer">
-                  <span>Click to Download</span>
-                </a>
-              </ChatMessage>
-              {!didIPostIt && <span>{formatAMPM(message.ts)}</span>}
-            </ChatMsgRow>
-          );
-        }
-      }
-      // else we display a system message that doesn't belong to
-      // anyone
       return (
         <ChatMsgRow key={message.ts}>
           <ChatMessage
@@ -184,7 +181,7 @@ const DateLabelContainer = styled.div`
 const DateLabel = styled.div`
   padding: 5px 12px 6px;
   text-align: center;
-  background-color: #35589A;
+  background-color: #35589a;
   border-radius: 7.5px;
   color: white;
 `;

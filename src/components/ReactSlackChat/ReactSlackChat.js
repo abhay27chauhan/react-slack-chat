@@ -12,7 +12,6 @@ import { bgColor, fontFamily, textColor } from "../../lib/constants";
 
 export default function ReactSlackChat(props) {
   const [failed, setFailed] = useState(false);
-  // List of Online users
   const [messages, setMessages] = useState([]);
 
   const [chatboxActive, setChatboxActive] = useState(false);
@@ -146,7 +145,6 @@ export default function ReactSlackChat(props) {
   useEffect(() => {
     if (messages.length === 0 || !activeChannelRef.current) return;
 
-
     activeChannelInterval.current = setInterval(
       () => loadMessages(activeChannelRef.current),
       refreshTime
@@ -221,6 +219,7 @@ export default function ReactSlackChat(props) {
           botName={props.botName}
           refreshTime={refreshTime}
           botId={props.botId}
+          defaultChannel={props.defaultChannel}
         />
       </Card>
     </>
@@ -300,7 +299,17 @@ const Card = styled.div`
 `;
 
 const Header = styled.div`
-  background: ${bgColor.themeColor};
+  background: #00c6ff; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #7187de,
+    #537af2
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #7187de,
+    #537af2
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   position: relative;
   padding: 20px;
   border-radius: 20px 20px 0px 0px;

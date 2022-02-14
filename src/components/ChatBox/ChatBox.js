@@ -14,9 +14,8 @@ function ChatBox({
   apiToken,
   botName,
   refreshTime,
-  userImage,
   botId,
-  onlineUsers,
+  defaultChannel
 }) {
 
   return (
@@ -37,6 +36,7 @@ function ChatBox({
         botName={botName}
         refreshTime={refreshTime}
         activeChannelRef={activeChannelRef}
+        defaultChannel={defaultChannel}
       />
     </Chat>
   );

@@ -18,28 +18,31 @@ function ChatFooter({
   singleUserMode,
   TS_MAP,
   refreshTime,
+  defaultChannel,
 }) {
   const [postMyMessage, setPostMyMessage] = useState("");
   const [inputDisabed, setInputDisabled] = useState(false);
   const [fileUploadLoader, setFileUploadLoader] = useState(false);
-  const [postMyFile, setPostMyFile] = useState("");
   const [emojiPicker, showEmojiPicker] = useState(false);
   const fileUploadTitle = `Posted by ${botName}`;
 
   function handleFileChange(e) {
+    e.preventDefault();
     debugLog("Going to upload", e.target.value, e.target);
-    const fileToUpload = document.getElementById("chat__upload").files[0];
+    let fileToUpload = e?.target?.files[0];
+    if (fileToUpload == null) {
+      return;
+    }
     setFileUploadLoader(true);
-    setPostMyFile(e.target.value);
     postFile({
       file: fileToUpload,
       title: fileUploadTitle,
       apiToken: apiToken,
       channel: activeChannelRef.current.id,
+      thread_ts: TS_MAP.current[defaultChannel]
     })
       .then(() => {
         setFileUploadLoader(false);
-        setPostMyFile("");
       })
       .catch((err) => {
         debugLog("Could not post file", err);
@@ -119,9 +122,10 @@ function ChatFooter({
               <GrAttachment />
               <input
                 type="file"
+                accept="image/*"
+                multiple
                 id="chat__upload"
                 className="chat__upload"
-                value={postMyFile}
                 onChange={handleFileChange}
               />
             </AttachmentIcon>
