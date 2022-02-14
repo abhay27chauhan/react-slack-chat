@@ -7,10 +7,7 @@ import ChatMessages from "./ChatMessages";
 
 function ChatBox({
   activeChannelRef,
-  goToChannelView,
   messages,
-  closeChatBox,
-  closeChatButton,
   bot,
   singleUserMode,
   TS_MAP,
@@ -26,9 +23,6 @@ function ChatBox({
     <Chat className="chat">
       <ChatHeader
         activeChannelRef={activeChannelRef}
-        goToChannelView={goToChannelView}
-        closeChatButton={closeChatButton}
-        closeChatBox={closeChatBox}
       />
       <ChatMessages
         messages={messages}

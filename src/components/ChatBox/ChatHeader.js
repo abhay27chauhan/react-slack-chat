@@ -4,31 +4,20 @@ import styled from "styled-components";
 import { fontFamily, textColor } from "../../lib/constants";
 import defaultChannelIcon from "../../assets/team.svg";
 
-function ChatHeader({
-  activeChannelRef,
-  goToChannelView,
-  closeChatButton,
-  closeChatBox,
-}) {
+function ChatHeader({ activeChannelRef }) {
   return (
     <Header>
-      <HeaderTop>
-        <ChatBack onClick={goToChannelView} />
-        {closeChatButton && <CloseButton onClick={closeChatBox}>×</CloseButton>}
-      </HeaderTop>
-      <HeaderBottom>
-        <ChatPerson>
-          <PersonName>Abhay Chauhan</PersonName>
-          <ChatName>{activeChannelRef.current?.name}</ChatName>
-        </ChatPerson>
-        <Image>
-          <ChatOnline className="active" />
-          <ChannelHeaderPhoto
-            src={activeChannelRef.current?.icon || defaultChannelIcon}
-            alt="active channel icon"
-          />
-        </Image>
-      </HeaderBottom>
+      <ChatPerson>
+        <PersonName>Abhay Chauhan</PersonName>
+        <ChatName>{activeChannelRef.current?.name}</ChatName>
+      </ChatPerson>
+      <Image>
+        <ChatOnline className="active" />
+        <ChannelHeaderPhoto
+          src={activeChannelRef.current?.icon || defaultChannelIcon}
+          alt="active channel icon"
+        />
+      </Image>
     </Header>
   );
 }
@@ -39,7 +28,12 @@ const Header = styled.div`
   z-index: 9999;
   left: 0rem;
   width: 100%;
-  height: 7rem;
+  height: 6rem;
+  padding: 0px 20px 0px 20px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background: #00c6ff; /* fallback for old browsers */
   background: -webkit-linear-gradient(
     to right,
@@ -52,45 +46,6 @@ const Header = styled.div`
     #00c6ff
   ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   border-radius: 20px 20px 0px 0px;
-
-  & > * {
-    box-sizing: border-box;
-  }
-`;
-
-const HeaderTop = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 44%;
-  padding: 12px 10px 0px 30px;
-`;
-
-const ChatBack = styled.span`
-  &::before {
-    content: "";
-    display: block;
-    cursor: pointer;
-    width: 1rem;
-    height: 1rem;
-    border: 3px solid #f6f3f3;
-    border-right: none;
-    border-bottom: none;
-    transform: rotate(-45deg);
-    transition: transform 0.3s;
-  }
-
-  &:hover::before {
-    transform: translateX(-0.3rem) rotate(-45deg);
-  }
-`;
-
-const HeaderBottom = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 56%;
-  padding: 0px 20px 0px 30px;
 `;
 
 const ChatPerson = styled.div`
@@ -128,27 +83,19 @@ const ChatName = styled.span`
 
 const Image = styled.div`
   position: relative;
-  height: 38px;
-  width: 38px;
+  height: 48px;
+  width: 48px;
   border: 3px solid #70e1f5;
   border-radius: 50%;
-`
+`;
 
 const ChannelHeaderPhoto = styled.img`
   border-radius: 50%;
-  height: 38px;
+  height: 48px;
 
   svg {
-    height: 38px;
+    height: 48px;
   }
-`;
-
-const CloseButton = styled.button`
-  color: #f6f3f3;
-  background: none;
-  font-size: 2rem;
-  border: none;
-  cursor: pointer;
 `;
 
 export default ChatHeader;

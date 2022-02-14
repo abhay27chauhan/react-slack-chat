@@ -17,7 +17,6 @@ function App() {
       singleUserMode={true}
       helpText="Optional Help Text"
       defaultChannel="random"
-      closeChatButton={true}
     />
   );
 }

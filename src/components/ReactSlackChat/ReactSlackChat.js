@@ -4,7 +4,6 @@ import classNames from "classnames";
 import styled, { createGlobalStyle } from "styled-components";
 
 import ChatBox from "../ChatBox/ChatBox";
-import Channels from "./Channels";
 import { getChannels, getMessages, getUsers } from "../../lib/slack-utils";
 import { arraysIdentical, debugLog, errorLogger } from "../../lib/utils";
 import { getCachedChannelMap } from "../../lib/cachedChannelMap";
@@ -15,11 +14,9 @@ export default function ReactSlackChat(props) {
   const [failed, setFailed] = useState(false);
   // List of Online users
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const [channels, setChannels] = useState([]);
   const [messages, setMessages] = useState([]);
 
   const [chatboxActive, setChatboxActive] = useState(false);
-  const [channelActiveView, setChannelActiveView] = useState(false);
   const [chatActiveView, setChatActiveView] = useState(false);
   const [newMessageNotification, setNewMessageNotification] = useState(0);
 
@@ -116,24 +113,7 @@ export default function ReactSlackChat(props) {
     };
 
     // Call it once
-    // getMessagesFromSlack();
-  }
-
-  function goToChannelView(e) {
-    e.stopPropagation();
-    // Close Chat box only if not already open
-    if (chatboxActive) {
-      setChannelActiveView(true);
-      setChatActiveView(false);
-      setMessages([]);
-
-      activeChannelRef.current = [];
-
-      if (activeChannelInterval.current) {
-        clearInterval(activeChannelInterval.current);
-        activeChannelInterval.current = null;
-      }
-    }
+    getMessagesFromSlack();
   }
 
   function goToChatView(e, channel) {
@@ -141,7 +121,6 @@ export default function ReactSlackChat(props) {
 
     if (chatboxActive || chatActiveView) {
       activeChannelRef.current = channel;
-      setChannelActiveView(false);
       setChatActiveView(true);
 
       if (activeChannelInterval.current) {
@@ -160,7 +139,6 @@ export default function ReactSlackChat(props) {
   function openChatBox(e) {
     if (!chatboxActive) {
       setChatboxActive(true);
-      !chatActiveView && setChannelActiveView(true);
       setNewMessageNotification(0);
     }
 
@@ -208,7 +186,6 @@ export default function ReactSlackChat(props) {
       .then((data) => {
         debugLog("CONNECTED!", "got data", data);
         setOnlineUsers(data.onlineUsers);
-        setChannels(data.channels);
       })
       .catch((err) => {
         debugLog("could not intialize slack bot", err);
@@ -246,19 +223,10 @@ export default function ReactSlackChat(props) {
             </UnreadNotificationsBadge>
           )}
           <h2 className="transition">{props.helpText || "Help?"}</h2>
-          <h2 className="subText">Click on a channel to interact.</h2>
         </Header>
-        <Channels
-          channelActiveView={channelActiveView}
-          channels={channels}
-          goToChatView={goToChatView}
-        />
         <ChatBox
           activeChannelRef={activeChannelRef}
-          goToChannelView={goToChannelView}
           messages={messages}
-          closeChatBox={closeChatBox}
-          closeChatButton={props.closeChatButton}
           bot={bot}
           singleUserMode={props.singleUserMode}
           TS_MAP={TS_MAP}
@@ -279,7 +247,6 @@ export default function ReactSlackChat(props) {
 const GlobalStyles = createGlobalStyle`
   .card-active {
     cursor: default;
-    height: 232.33px;
     width: 340px;
     z-index: 99999;
 
@@ -298,36 +265,11 @@ const GlobalStyles = createGlobalStyle`
         opacity: 0;
         transition: visibility 0s, opacity 0.5s linear;
       }
-      .channels {
-        visibility: hidden;
-        opacity: 0;
-        transition: visibility 0s, opacity 0.5s linear;
-      }
       .chat {
         visibility: visible;
         opacity: 1;
         transition: visibility 0s, opacity 0.5s linear;
       }
-    }
-
-    .subText {
-      visibility: visible;
-      transition: visibility 0s, opacity 0.5s linear;
-      opacity: 1;
-    }
-
-    .channelActive.channels {
-      overflow-y: auto;
-      visibility: visible;
-      transition: visibility 0s, opacity 0.5s linear;
-      opacity: 1;
-      overflow-x: hidden;
-    }
-
-    &.channelActive .helpHeader {
-      visibility: visible;
-      opacity: 1;
-      transition: visibility 0s, opacity 0.5s linear;
     }
   }
 
@@ -359,18 +301,6 @@ const Card = styled.div`
   width: 340px;
   cursor: pointer;
   border-radius: 20px 20px 0px 0px;
-
-  .channels {
-    visibility: hidden;
-    opacity: 0;
-    transition: visibility 0s, opacity 0.5s linear;
-  }
-
-  .subText {
-    visibility: hidden;
-    transition: visibility 0s, opacity 0.5s linear;
-    opacity: 0;
-  }
 
   h2 {
     color: ${textColor.textWhite};
