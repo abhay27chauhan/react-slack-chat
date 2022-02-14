@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styled, { keyframes } from "styled-components";
 import Picker, { SKIN_TONE_MEDIUM_DARK } from "emoji-picker-react";
 import { GrAttachment } from "react-icons/gr";
+import { ImCross } from "react-icons/im";
 
 import { bgColor, fontFamily, textColor } from "../../lib/constants";
 import emojiIcon from "../../assets/emojiIcon.svg";
@@ -24,7 +25,10 @@ function ChatFooter({
   const [inputDisabed, setInputDisabled] = useState(false);
   const [fileUploadLoader, setFileUploadLoader] = useState(false);
   const [emojiPicker, showEmojiPicker] = useState(false);
+  const [files, setFiles] = useState([]);
   const fileUploadTitle = `Posted by ${botName}`;
+  const fileObject = useRef([]);
+  const fileArray = useRef([]);
 
   function handleFileChange(e) {
     e.preventDefault();
@@ -33,23 +37,50 @@ function ChatFooter({
     if (fileToUpload == null) {
       return;
     }
+    fileObject.current.push(Array.from(e?.target?.files));
+    for (let i = 0; i < fileObject.current[0].length; i++) {
+      fileArray.current.push(URL.createObjectURL(fileObject.current[0][i]));
+    }
+    setFiles(fileArray.current);
+  }
+
+  function deleteOnClick(index){
+    fileObject.current = fileObject.current.filter((obj, i) => i !== index);
+    fileArray.current = fileArray.current.filter((obj, i) => i !== index);
+    setFiles(fileArray.current);
+  }
+
+  function postMyFile() {
     setFileUploadLoader(true);
-    postFile({
-      file: fileToUpload,
-      title: fileUploadTitle,
-      apiToken: apiToken,
-      channel: activeChannelRef.current.id,
-      thread_ts: TS_MAP.current[defaultChannel]
-    })
+    setFiles([]);
+    Promise.all(
+      fileObject.current[0].map((fileObject) =>
+        postFile({
+          file: fileObject,
+          title: fileUploadTitle,
+          apiToken: apiToken,
+          channel: activeChannelRef.current.id,
+          thread_ts: TS_MAP.current[defaultChannel],
+        })
+      )
+    )
       .then(() => {
         setFileUploadLoader(false);
+        fileObject.current = [];
+        fileArray.current = [];
       })
       .catch((err) => {
         debugLog("Could not post file", err);
+        fileObject.current = [];
+        fileArray.current = [];
       });
   }
 
   function postNewMessage() {
+    if (files && files.length > 0) {
+      postMyFile();
+      return;
+    }
     setInputDisabled(true);
     const textMessage = postMyMessage;
     setPostMyMessage("");
@@ -97,6 +128,16 @@ function ChatFooter({
 
   return (
     <InputBox>
+      {files && files.length > 0 && (
+        <PreviewBox>
+          {(files || []).map((url, i) => (
+            <div key={i}>
+              <img src={url} alt="preview" />
+              <StyledCross onClick={() => deleteOnClick(i)} />
+            </div>
+          ))}
+        </PreviewBox>
+      )}
       {emojiPicker && (
         <EmojiPickerBox>
           <Picker
@@ -208,6 +249,48 @@ const InputBox = styled.div`
   height: 49px;
   display: flex;
   align-items: center;
+`;
+
+const StyledCross = styled(ImCross)`
+  position: absolute;
+  top: -5px;
+  left: 76%;
+  height: 10px;
+  cursor: pointer;
+`;
+
+const PreviewBox = styled.div`
+  position: absolute;
+  top: -49px;
+  left: -17px;
+  width: 340px;
+  height: 49px;
+  box-sizing: border-box;
+  z-index: 10000;
+  background-color: white;
+  padding: 5px 10px;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  div {
+    position: relative;
+    height: 100%;
+    border: 2px solid gray;
+    width: 30px;
+  }
+
+  img {
+    height: 100%;
+    width: 100%;
+  }
 `;
 
 const Attachment = styled.div`
