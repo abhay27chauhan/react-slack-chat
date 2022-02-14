@@ -129,7 +129,7 @@ function ChatMessages({ messages, botName, botId }) {
 const Messages = styled.div`
   position: absolute;
   top: 60px;
-  height: 68%;
+  height: 69%;
   width: 96%;
   padding-top: 35px;
   padding-right: 10px;

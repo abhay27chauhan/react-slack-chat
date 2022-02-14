@@ -113,7 +113,7 @@ function ChatFooter({
         </ChatFileUpload>
       )}
       {!fileUploadLoader && (
-        <div>
+        <>
           <Attachment>
             <AttachmentIcon htmlFor="chat__upload">
               <GrAttachment />
@@ -145,7 +145,7 @@ function ChatFooter({
               onClick={() => showEmojiPicker(!emojiPicker)}
             />
           </EmojiIcon>
-        </div>
+        </>
       )}
     </InputBox>
   );
@@ -193,14 +193,22 @@ const ChatFileUpload = styled.div`
 
 const InputBox = styled.div`
   position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+  bottom: 8px;
+  background-color: #f4f4f4;
+  border-radius: 30px;
+  padding: 11px;
+  box-sizing: border-box;
+  width: 90%;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 49px;
+  display: flex;
+  align-items: center;
 `;
 
 const Attachment = styled.div`
   position: absolute;
-  bottom: 15px;
+  bottom: 11px;
   left: 15px;
   z-index: 9999;
 `;
@@ -217,18 +225,20 @@ const AttachmentIcon = styled.label`
 
 const ChatInput = styled.input`
   width: 100%;
-  height: 62px;
   padding: 0.5rem 2.5rem 0.5rem 2.5rem;
   font-size: 1em;
   color: ${textColor.colorClay};
   font-family: ${fontFamily.font_0}, ${fontFamily.font_1}, ${fontFamily.font_2},
     ${fontFamily.font_3};
   box-sizing: border-box;
+  border: none;
+  background-color: #f4f4f4;
+  outline: none;
 `;
 
 const EmojiIcon = styled.div`
   position: absolute;
-  bottom: 15px;
+  bottom: 9px;
   right: 15px;
   height: 28px;
   width: 28px;
