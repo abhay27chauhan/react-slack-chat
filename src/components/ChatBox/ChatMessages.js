@@ -4,45 +4,13 @@ import styled from "styled-components";
 import {
   decodeHtml,
   hasAttachment,
-  isAdmin,
   isSystemMessage,
   wasIMentioned,
 } from "../../lib/chatFunctions";
 import { bgColor, fontFamily, textColor } from "../../lib/constants";
-import defaultChannelIcon from "../../assets/team.svg";
 
-function ChatMessages({ messages, onlineUsers, botName, userImage, botId }) {
+function ChatMessages({ messages, botName, botId }) {
   const fileUploadTitle = `Posted by ${botName}`;
-  
-  function getUserImg(message) {
-    const userId = message.user || message.username;
-    let image;
-    onlineUsers.forEach((user) => {
-      if (user.id === userId) {
-        image = user.image;
-      }
-    });
-    const imageToReturn = image ? (
-      // Found backend user
-      <ChatContactPhoto src={image} alt="mentionedUserImg" />
-    ) : // Check admin or client user?
-    isAdmin(message) ? (
-      <ChatContactPhoto
-        src={`https://robohash.org/${userId}?set=set2`}
-        alt={userId}
-      />
-    ) : // Check system message or client user?
-    isSystemMessage(message) ? (
-      <ChatContactPhoto
-        src={`https://robohash.org/${userId}?set=set3`}
-        alt={userId}
-      />
-    ) : (
-      // Regular browser client user
-      <ChatContactPhoto src={`https://robohash.org/${userId}`} alt={userId} />
-    );
-    return imageToReturn;
-  }
 
   function displayFormattedMessage(message) {
     // decode formatting from messages text to html text
@@ -66,13 +34,13 @@ function ChatMessages({ messages, onlineUsers, botName, userImage, botId }) {
               className={classNames(didIPostIt ? "mine" : "notMine")}
               key={message.ts}
             >
-              {didIPostIt && (
+              {/* {didIPostIt && (
                 // show customer image
                 <UserContactPhoto
                   src={userImage || defaultChannelIcon}
                   alt="userIcon"
                 />
-              )}
+              )} */}
               <ChatMessage
                 className={classNames(didIPostIt ? "mine" : "notMine")}
               >
@@ -83,10 +51,10 @@ function ChatMessages({ messages, onlineUsers, botName, userImage, botId }) {
                   <span>Click to Download</span>
                 </a>
               </ChatMessage>
-              {
+              {/* {
                 // Show remote users image only if message isn't customers
                 !didIPostIt ? getUserImg(message) : null
-              }
+              } */}
             </ChatMsgRow>
           );
         }
@@ -111,10 +79,10 @@ function ChatMessages({ messages, onlineUsers, botName, userImage, botId }) {
         className={classNames(myMessage ? "mine" : "notMine")}
         key={message.ts}
       >
-        {myMessage && (
+        {/* {myMessage && (
           // show customer image
           <UserContactPhoto src={userImage} alt="userIcon" />
-        )}
+        )} */}
         <ChatMessage
           className={classNames(
             mentioned ? "mentioned" : "",
@@ -123,10 +91,10 @@ function ChatMessages({ messages, onlineUsers, botName, userImage, botId }) {
         >
           {messageText}
         </ChatMessage>
-        {
+        {/* {
           // Show remote users image only if message isn't customers
           !myMessage ? getUserImg(message) : null
-        }
+        } */}
       </ChatMsgRow>
     );
   }
@@ -196,21 +164,6 @@ const ChatMessage = styled.div`
   &.notMine {
     background-color: ${bgColor.bgLightGray};
   }
-`;
-
-const UserContactPhoto = styled.img`
-  float: left;
-  margin-top: 2px;
-  padding-bottom: 1px;
-  height: 38px;
-  border-radius: 50%;
-  margin-right: 10px;
-`;
-
-const ChatContactPhoto = styled.img`
-  border-radius: 50%;
-  height: 38px;
-  float: right;
 `;
 
 export default ChatMessages;

@@ -37,13 +37,13 @@ const Header = styled.div`
   background: #00c6ff; /* fallback for old browsers */
   background: -webkit-linear-gradient(
     to right,
-    #0072ff,
-    #00c6ff
+    #7187DE,
+    #537AF2
   ); /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(
     to right,
-    #0072ff,
-    #00c6ff
+    #7187DE,
+    #537AF2
   ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   border-radius: 20px 20px 0px 0px;
 `;
@@ -78,7 +78,7 @@ const ChatOnline = styled.span`
 `;
 
 const ChatName = styled.span`
-  color: #d3d1d1;
+  color: #B6BFE9;
 `;
 
 const Image = styled.div`

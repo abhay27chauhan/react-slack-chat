@@ -4,7 +4,7 @@ import classNames from "classnames";
 import styled, { createGlobalStyle } from "styled-components";
 
 import ChatBox from "../ChatBox/ChatBox";
-import { getChannels, getMessages, getUsers } from "../../lib/slack-utils";
+import { getChannels, getMessages } from "../../lib/slack-utils";
 import { arraysIdentical, debugLog, errorLogger } from "../../lib/utils";
 import { getCachedChannelMap } from "../../lib/cachedChannelMap";
 import { getNewMessages } from "../../lib/chatFunctions";
@@ -13,7 +13,6 @@ import { bgColor, fontFamily, textColor } from "../../lib/constants";
 export default function ReactSlackChat(props) {
   const [failed, setFailed] = useState(false);
   // List of Online users
-  const [onlineUsers, setOnlineUsers] = useState([]);
   const [messages, setMessages] = useState([]);
 
   const [chatboxActive, setChatboxActive] = useState(false);
@@ -34,26 +33,18 @@ export default function ReactSlackChat(props) {
   }
 
   function connectBot() {
-    return Promise.all([
-      getChannels({
-        apiToken: props.apiToken,
-        bot: bot.current,
-        channelFilter: props.channels,
-        defaultChannel: props.defaultChannel,
-      }),
-      getUsers({
-        apiToken: props.apiToken,
-        bot: bot.current,
-      }),
-    ])
-      .then(([channelData, teamData]) => {
-        debugLog("got channel and team data", channelData, teamData);
-        const { channels, activeChannel } = channelData;
-        const { onlineUsers } = teamData;
+    return getChannels({
+      apiToken: props.apiToken,
+      bot: bot.current,
+      channelFilter: props.channels,
+      defaultChannel: props.defaultChannel,
+    })
+      .then(({ channels, activeChannel }) => {
+        debugLog("got channel and team data", channels, activeChannel);
 
         activeChannelRef.current = activeChannel;
         activeChannel && setChatActiveView(true);
-        return { channels, onlineUsers };
+        return { channels };
       })
       .catch((err) => {
         errorLogger("connectBot", err);
@@ -158,7 +149,7 @@ export default function ReactSlackChat(props) {
   }
 
   useEffect(() => {
-    if(messages.length < 0 || !activeChannelRef.current) return;
+    if (messages.length === 0 || !activeChannelRef.current) return;
 
     activeChannelInterval.current = setInterval(
       () => loadMessages(activeChannelRef.current),
@@ -166,8 +157,9 @@ export default function ReactSlackChat(props) {
     );
 
     return () => {
-      activeChannelInterval.current && clearInterval(activeChannelInterval.current);
-    }
+      activeChannelInterval.current &&
+        clearInterval(activeChannelInterval.current);
+    };
   }, [messages]);
 
   useEffect(() => {
@@ -185,7 +177,6 @@ export default function ReactSlackChat(props) {
     connectBot()
       .then((data) => {
         debugLog("CONNECTED!", "got data", data);
-        setOnlineUsers(data.onlineUsers);
       })
       .catch((err) => {
         debugLog("could not intialize slack bot", err);
@@ -233,9 +224,7 @@ export default function ReactSlackChat(props) {
           apiToken={props.apiToken}
           botName={props.botName}
           refreshTime={refreshTime}
-          userImage={props.userImage}
           botId={props.botId}
-          onlineUsers={onlineUsers}
         />
       </Card>
     </>

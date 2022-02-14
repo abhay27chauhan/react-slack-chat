@@ -26,9 +26,7 @@ function ChatBox({
       />
       <ChatMessages
         messages={messages}
-        onlineUsers={onlineUsers}
         botName={botName}
-        userImage={userImage}
         botId={botId}
       />
       <ChatFooter
