@@ -33,18 +33,14 @@ function ChatFooter({
   function handleFileChange(e) {
     e.preventDefault();
     debugLog("Going to upload", e.target.value, e.target);
-    let fileToUpload = e?.target?.files[0];
-    if (fileToUpload == null) {
-      return;
+    fileObject.current.push(...Array.from(e?.target?.files));
+    for (let i = fileArray.current.length; i < fileObject.current.length; i++) {
+      fileArray.current.push(URL.createObjectURL(fileObject.current[i]));
     }
-    fileObject.current.push(Array.from(e?.target?.files));
-    for (let i = 0; i < fileObject.current[0].length; i++) {
-      fileArray.current.push(URL.createObjectURL(fileObject.current[0][i]));
-    }
-    setFiles(fileArray.current);
+    setFiles([...fileArray.current]);
   }
 
-  function deleteOnClick(index){
+  function deleteOnClick(index) {
     fileObject.current = fileObject.current.filter((obj, i) => i !== index);
     fileArray.current = fileArray.current.filter((obj, i) => i !== index);
     setFiles(fileArray.current);
@@ -130,7 +126,7 @@ function ChatFooter({
     <InputBox>
       {files && files.length > 0 && (
         <PreviewBox>
-          {(files || []).map((url, i) => (
+          {files.map((url, i) => (
             <div key={i}>
               <img src={url} alt="preview" />
               <StyledCross onClick={() => deleteOnClick(i)} />
@@ -226,9 +222,11 @@ const ChatFileUpload = styled.div`
   background: ${bgColor.colorCuriousBlue};
   bottom: 0;
   left: 0;
-  width: 84%;
-  height: 1.5rem;
-  padding: 1rem 1rem 1rem 2rem;
+  height: 49px;
+  width: 100%;
+  border-radius: 30px;
+  display: grid;
+  place-items: center;
 
   span::after {
     content: " .";
@@ -272,7 +270,7 @@ const PreviewBox = styled.div`
   display: flex;
   gap: 10px;
   overflow-x: auto;
-  
+
   -ms-overflow-style: none;
   scrollbar-width: none;
 
