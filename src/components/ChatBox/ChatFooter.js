@@ -335,7 +335,7 @@ const EmojiIcon = styled.div`
 
 const EmojiPickerBox = styled.div`
   position: absolute;
-  bottom: 100px;
+  bottom: 56px;
   right: 0px;
   z-index: 10000;
   min-width: 150px;
